@@ -1,0 +1,35 @@
+эндпоинт(конечная точка)-маршрут, определенный вашим приложением rails
+
+rails g controller items
+Создается контроллер, вью(страницу создаем сами), тест, хелпер, ассет(стили)
+
+Создаем глобальную переменную @items
+
+В контроллер пишем метод который перебирает строки таблицы
+ def index
+    @items = Item.all
+    render text: @items.map do |i|
+    "#{i.name}: #{i.price}:"
+    end
+ end
+ 
+В роутс пишем
+ get '/items', to: 'items#index'
+ 
+ скрытый запрос
+ post '/items', to: 'items#create'
+ 
+ запрос который автоматически создает все роуты
+ resources :items
+ или некоторые роуты
+ resources :items, only: %i[index create]
+ 
+В вью
+ <% @items.each do |item| %>
+
+  <ul>
+    <li><%= item.name %></li>
+    <li><%= item.price %></li>
+    <li><%= item.description %></li>
+  </ul>
+ <% end %>

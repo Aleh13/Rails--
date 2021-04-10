@@ -1,0 +1,32 @@
+Цепочка из методов where
+
+Get запрос
+?price_from=750
+?today=1
+?price_from=750&today=1 (больше 750 и созданные сегодня)
+?price_from=5&today=1&votes_from=3 (больше 5,созданные сегодня c рейтингом меньше или равно 3)
+
+Цепочка из методов where
+def index
+    @items = Item
+    @items = @items.where('price >= ?', params[:price_from]) if params[:price_from]
+    @items = @items.order(:id)
+end
+кусок кода выполнится в том случае если будет price_from, иначе мы его отсортируем
+
+Вывести объекты которые были созданы сегодня
+def index
+    @items = Item
+    @items = @items.where('price >= ?', params[:price_from]) if params[:price_from]
+    @items = @items.where('created_at >= ?', 1.day.ago) if params[:today]
+    @items = @items.order(:id)
+end
+
+Вывести объекты по рейтингу
+def index
+    @items = Item
+    @items = @items.where('price >= ?', params[:price_from]) if params[:price_from]
+    @items = @items.where('created_at >= ?', 1.day.ago) if params[:today]
+    @items = @items.where('votes_count >= ?', params[:votes_from]) if params[:votes_from]
+    @items = @items.order(:id)
+end

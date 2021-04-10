@@ -1,0 +1,48 @@
+
+Метод show
+Найди Item у которого id(шник) равен id(шнику) который мы будем передавать в парамсах
+Используем инстансную переменную @item и метод first чтобы вернулся не массив 
+def show
+    @item = Item.where(id: params[:id]).first
+end
+
+
+Создаем вью show
+ <h2 style="color: #B00100; margin: 0 auto">show item<h2>
+
+
+   <h4><%= @item.name %></h4>
+
+   <ul>
+     <li>Price: <%= @item.price %> $ </li>
+     <li>Weight: <%= @item.weight %></li>
+     <li>Description: <%= @item.description %></li>
+   </ul>
+   
+   
+Обрабатываем исключения если нету id(шника)
+def show
+    unless (@item = Item.where(id: params[:id]).first)
+      render body: 'Page not found',status: 404
+    end
+end
+
+
+Вью index
+Добавляем ссылку
+<% @items.each do |item| %>
+    <ul>
+     <li><%= link_to item.name, "/items/#{item.id}"%></li>
+     <li><%= item.price %></li>
+     <li><%= item.description %></li>
+    </ul>
+<% end %>
+
+Улучшенный вариант вью
+<% @items.each do |item| %>
+    <ul>
+     <li><%= link_to item.name, item_path(item) %></li>
+     <li><%= item.price %></li>
+     <li><%= item.description %></li>
+  </ul>
+<% end %>

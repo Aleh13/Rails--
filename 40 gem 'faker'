@@ -1,0 +1,36 @@
+в папке spec создаем дерикторию controllers
+в ней файл item_controller_spec.rb
+устанавливаем в group :development, :test do
+gem 'rails-controller-testing'
+bundle
+в корень
+gem 'faker', git: 'https://github.com/faker-ruby/faker.git', branch: 'master'
+когда тестируем эндпоинты указываем метод Get, эндпоинт show('GET #show')#show инстанстный метод
+в item_controller_spec.rb
+RSpec.describe ItemsController, type: :controller do
+  render_views
+
+  describe 'GET #show' do
+    let!(:items) { create_list :item, 5 }
+
+    before { get :index }
+
+    it 'returns items' do
+      binding.pry(можно убрать)
+      expect(assigns(:items)).to match_array(items)
+
+    end
+  end
+создаем item в количестве 5 (обращаемся к фабрике items.rb и создаем 5 такимх айтемов)
+подробнее о работе когда в видео
+
+изменяем фабрику
+FactoryBot.define do
+  factory :item do
+    price  { rand 20...100 }
+    name   { Faker::Lorem.word.downcase } (используется библиотека Faker для выбора случайного слова)
+    real   { [true, false].sample }
+    weight { rand 5...10 }
+    description { Faker::Lorem.word.downcase }
+  end
+end

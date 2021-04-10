@@ -1,0 +1,18 @@
+папка config -> environments   настройки конфигурации разработки
+
+файл application.rb            настройки всего приложения
+
+
+Gemfile
+Удалим папку test в приложении, будем использовать библиотеку Rspec
+в gemfil в development test прописываем gem 'rspec-rails'
+
+Для установки гема прописываем bundle install
+чтобы сгенерировалась данная библиотека пишем rails g rspec:install
+
+Установим gem 'pry'
+bundle install
+
+binding.pry  останавливает программу в точке (объект с методом pry)
+Ctr+Shift+d(из нескольких окон) выйти из binding.pry
+

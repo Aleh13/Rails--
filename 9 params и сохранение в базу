@@ -1,0 +1,50 @@
+https://mkdev.me/posts/vsyo-chto-nuzhno-znat-o-routes-params-i-formah-v-rails
+
+Парамс в Ruby on Rails - это хэш. Это сбор данных, полученных приложением в ходе конкретного HTTP-запроса. Данные могут быть получены из разных источников, таких как ссылки, представления форм и перенаправ (https://progi.pro/kakovi-parametri-v-relsah-i-kakova-cel-etogo-10403299)
+
+В нашем случае Params - для безопасности базы данных(будут передаваться только те данные что указаны)
+Создается приватный метод, который передается в метод create (item = Item.create (items_params))
+
+Отправляем данные в базу данных post(защищенный) запрос через командную строку(консоль)
+curl -d "name=oleg&price=120" -X POST http://localhost:3000/items
+
+
+адресная строка(URL, URN, URI) 
+get параметры
+
+для скрытых запросов в базу данных используем метод post вместо get
+post '/items', to: 'items#create'
+вместо post, get для всех маршрутов
+resources :items
+для исключения некоторых маршрутов
+resources :items, only: %i[index create]
+
+
+Отключаем лайоты(макеты)
+layout false
+Отключаем токен с помощью коллбэка
+skip_before_action :verify_authenticity_token
+
+
+Создаем метод create для добавления данных в базу, используем json
+def create
+    item = Item.create (items_params)
+     if item.persisted?
+      render json: item.name, status: :created
+     else
+      render json: item.errors, status: :unprocessable_entity
+    end
+end
+
+Добавляем приватный метод для безопасности базы данных
+ private
+  def items_params
+    params.permit(:name, :price, :real, :weight, :description)
+
+end
+  
+В методе create прописываем
+Item.create(items_params)
+
+
+

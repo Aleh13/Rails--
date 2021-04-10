@@ -1,0 +1,72 @@
+У юзера много заказов, у заказа один юзер(has_many & belongs_to)
+
+Создадим модель rails g model order
+
+В модели (ордер может иметь только одного юзера)
+class Order < ApplicationRecord
+  belongs_to :user
+end
+
+
+А юзер много заказов (has_many :orders, dependent: :destroy)
+class User < ApplicationRecord
+  has_one :cart, dependent: :destroy
+  has_many :orders, dependent: :destroy
+end
+
+
+В миграцию добавляем(t.integer :user_id)
+def change
+    create_table :orders do |t|
+      t.integer :user_id
+      t.timestamps
+    end
+    
+ Запускаем миграцию
+ bundle exec rake db:migrate && rake db:migrate RAILS_ENV=test
+ 
+ Создаем юзера
+ u = User.create(login: 'dasha')
+ 
+ 
+ Создаем заказ
+ o_1 = Order.new (создаем объект в оперативной памяти)
+ o_1.save
+ => false
+ o_1.errors
+ 
+ User.all  все юзеры
+ 
+ 
+ Передаем сразу id юзера в ордер
+ u_1 = User.first
+ u_2 = User.last
+ 
+ o = Order.create(user: u_1)
+ o_2 = Order.create(user: u_2)
+ 
+ 
+ Смотрим имя юзера
+ u_1.login
+ u_2.login
+ 
+ Смотрим заказы юзера
+ u_1.orders
+ u_2.orders
+ 
+ Количество заказов в цифре
+ u_2.orders.size
+ 
+ 
+ У первого заказа юзер
+ o_1 = Order.first
+ 
+ Заказы юзера в корзине
+ o_1 = Order.where(user_id: 9)
+ 
+ Посмотреть в корзине юзера первый заказ
+ o_1 = Order.where(user_id: 9).first (second, third)
+ 
+ Ордер принадлежит одному юзеру, но юзер может иметь много ордеров
+ 
+ 

@@ -1,0 +1,153 @@
+eager loading(жадная загрузка)
+
+Сгенерируем новую модель
+rails g model image
+
+
+Полиморфная ассоциация
+
+def change
+    create_table :images do |t|
+      t.integer  :item_id
+      t.string   :file
+      t.integer  :imageable_id
+      t.string   :imageable_type
+
+      t.timestamps
+end
+
+
+Запустим
+bundle exec rake db:migrate && rake db:migrate RAILS_ENV=test
+
+
+В модели image.rb
+Создаем полиморфную связь
+class Image < ApplicationRecord
+  belongs_to :imageable, polymorphic: true
+end
+
+В модели item.rb
+has_one   name :image, as: :imageable
+
+Сохранить 3 рисунка в папку app/assets/images
+добавим их через консоль в базу данных
+
+Image.create(item_id: 2, file: '2.jpg', imageable_id: 1, imageable_type: 'Item')
+
+Переписываем index
+
+<h2 style="color: #B00100; margin: 0 auto">all items</h2><br/>
+
+<% unless @items.empty? %>
+  <table>
+    <tr>
+      <th>Id</th>
+      <th>Name</th>
+      <th>Price</th>
+      <th>Description</th>
+      <th>Rating</th>
+      <th>Delete</th>
+    </tr>
+    <% @items.each do |item| %>
+      <tr>
+        <td><%= item.id %></td>
+        <td><%= link_to item.name, item_path(item) %></td>
+        <td><%= item.price %></td>
+        <td><%= "img" if item.description %></td>
+        <td><%= item.votes_count %>, <%= link_to '+', upvote_item_path(item) %> </td>
+        <td><%= button_to 'delete', item_path(item), method: :delete %></td>
+      </tr>
+    <% end %>
+  </table>
+  <br/>
+  <%= button_to 'new item', new_item_path, method: :get %>
+  <%= button_to 'only expensive', expensive_items_path, method: :get %>
+  <%= button_to 'back', items_path, method: :get %>
+  <%= button_to 'admin panel', admin_users_count_path, method: :get %>
+<% else %>
+  <h3 style="color: #B00100; margin: 0 auto">no items</h3><br/>
+  <%= button_to 'new item', new_item_path, method: :get %>
+<% end %>
+
+
+<%= render partial: 'shared/email' %>
+
+
+Стало***********************
+
+<% if @items.empty? %>
+<h3 style="color: #B00100; margin: 0 auto">no items</h3> <br/>
+<%= button_to 'new item', new_item_path, method: :get %>
+<% else %>
+  <table class="my_table">
+  <tr>
+    <th>Id</th>
+    <th>Name</th>
+    <th>Price</th>
+    <th>Description</th>
+    <th>Rating</th>
+    <th>Image</th>
+    <th>Delete</th>
+  </tr>
+<% end %>
+  <% @items.each do |item| %>
+    <tr>
+      <th><%= item.id %></th>
+      <th><%= link_to item.name, item_path(item) %></th>
+      <th><%= item.price %></th>
+      <th style="font-weight: bold; text-align: center"><%= item.description ? "img" : "no img" %></th>
+      <th><%= item.votes_count %>, <%= link_to '+', upvote_item_path(item) %> </th>
+      <th><%= !item.image.nil? ? image_tag(item.image.file, width: '30px', height: '30px') : 'no img' %></th>
+      <th><%= button_to 'delete', item_path(item), method: :delete %></th>
+    </tr>
+  <% end %>
+</table>
+<br/>
+<%= button_to 'new item', new_item_path, method: :get %>
+<%= button_to 'only expensive', expensive_items_path, method: :get %>
+<%= button_to 'back', items_path, method: :get %>
+<%= button_to 'admin panel', admin_users_count_path, method: :get %>
+
+<%= render partial: 'shared/email' %>
+
+
+Применили стили
+подключаем
+<table class="my_table">
+
+Стили находятся в 
+app/assets/stylesheets/items.scss
+
+.my_table, tr, th {
+  border: 1px solid black;
+  padding: 4px;
+  margin: 4px;
+  background: #DADADA;
+}
+
+<th><%= !item.image.nil? ? image_tag(item.image.file, width: '30px', height: '30px') : 'no img' %></th>
+Если !item.image.nill? если это не ноль (false), то используется метод хелпер image_tag выведи его(картинку) если это false иначе no img
+
+
+Удалим ненужную колонку item_id в таблице image
+Создаем миграцию
+rails g migration delete_column_item_id_from_images
+
+в миграции пишем
+class DeleteColumnItemIdFromImages < ActiveRecord::Migration[6.0]
+  remove_column :images, :item_id
+end
+
+запускаем миграцию
+bundle exec rake db:migrate && rake db:migrate RAILS_ENV=test
+
+
+! Уменьшаем число запросов в базу данных до одного(жадная загрузка)
+в items_controller.rb
+в методе index
+@items = @items.includes(:image)
+
+
+
+

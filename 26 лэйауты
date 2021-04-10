@@ -1,0 +1,73 @@
+
+В items_controller.rb удалим хелпер layout false
+Лайаут application.html.erb рендерит html страницы, добавляем код,
+который будет отображаться на всех страницах
+
+###
+подправим Description <%= text_field_tag :description, @item.description %>
+
+
+Сгенерируем новый контроллер admin
+rails g controller admin
+
+из items_controller вырежем def admin?
+и вставим в application_controller(контроллер от которого наследуются все контроллеры 17)
+
+def admin?
+  #true
+  render_403 unless params[:admin]
+end
+
+теперь этот метод будет доступен во всех контроллерах
+
+
+в admin_controller пишем
+before_action :admin?
+перед тем как попадать в эндпоинты, админ ли в них попадает?
+
+сюда же добавляем метод
+def users_count
+    @users_count = User.count
+end
+сколько пользователей сохранено в базе данных
+
+в папку views/admin добавим файл users_count.html.erb
+<div style="margin: 0 auto">
+  <p>Count users: <%= @users_count %></p>
+</div>
+выведем количество пользователей
+
+Добавим путь в роут
+get '/admin/users_count', 'admin#users_count'
+
+
+Для отображения индекс сразу(без загрузки нач. стр. rails), пишем root
+root to: 'items#index'
+
+В index.html добавим кнопку admin
+<%= button_to 'admin panel', admin_users_count_path, method: :get %>
+
+
+
+Скопируем, вставим, переименуем лайаут application на admin
+запишем <h2 style="color: #730E15">Admin panel</h2>
+
+и в admin_controller подключим этот лайаут
+layout 'admin'
+
+
+В admin.html добавим футер
+<footer>
+  <p>По всем вопросам пишите на почту q4wk13@gmail.com</p>
+<footer/>
+
+Сделаем лайаут для одного метода
+в admin_controller закомментируем layout 'admin'
+и вставим его в екшн users_count
+render layout: 'admin'
+
+ def users_count
+    @users_count = User.count
+    render layout: 'admin'
+ end
+

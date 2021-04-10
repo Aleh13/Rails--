@@ -1,0 +1,91 @@
+
+ассоциация has_and_belongs_to_many 
+Один и тот же товар может находится в разных карзинах(создает лишние ячейки в таблице)
+
+В модели items
+has_and_belongs_to_many :carts
+
+В модели cart
+has_and_belongs_to_many :items
+
+
+Создаем миграцию
+rails g migration create_carts_items
+
+Создадим таблицу join_table которая называется именами таблиц которые мы связываем
+будет хранить id-шники таблиц которые будут между собой связаны, таблица не будет 
+иметь собственного id-шника поэтому в методе прописываем id: false
+
+Таблица в миграции
+def change
+    create_table :carts_items, id: false do |t|
+      t.integer :cart_id
+      t.integer :item_id
+    end
+    
+ Запускаем миграцию
+ bundle exec rake db:migrate && rake db:migrate RAILS_ENV=test
+ 
+ Добавляем корзину без юзера(раньше корзину в таблицу можно было добавить только с юзером),
+ в модели карт добавляем optional: true
+ 
+class Cart < ApplicationRecord
+  belongs_to :user, optional: true
+  has_and_belongs_to_many :items
+end
+ 
+ Добавим корзину
+ c1 = Cart.create
+ c2 = Cart.create
+ 
+ 
+ Создадим товар
+ i1 = Item.create(name: 'car', price:100)
+ i2 = Item.create(name: 'bike', price:200)
+ 
+ 
+ Добавляем товар в корзину
+ в первую корзину первый товар
+ c1.items << i1
+ 
+ Была добавлена запись в таблицу carts_items
+ 
+ 
+ Корзина
+ i1.carts
+ 
+ 
+ Добавить тот же товар в корзину c2
+ c2.items << i1
+ 
+ Добавим другой товар в корзину с2
+ c2.items << i2
+ 
+ 
+ id юзера добавляем в корзину
+ u = User.first
+ u.cart = c1
+ 
+ 
+ Вывел товары юзера
+ u.cart.items
+ 
+ 
+ id юзера добавляем в корзину
+ u2 = User.last
+ u2.cart = c2
+ 
+ 
+ Вывел товары юзера u2
+ u2.cart.items 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+    
+    
+     

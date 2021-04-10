@@ -1,0 +1,82 @@
+Хэлперы
+(специальные методы хранящиеся в файлах app/helpers.
+Есть стандартные хелперы(организуют сложную логику) определенные rails доступные во всех шаблонах(link_to))
+Напишем свои хелперы
+
+Специальные классы хранящиеся в папке helpers
+Хелперы существую для того что бы вних содержались методы
+доступные в других классах
+
+переписываем show(потом вернем обратно!)
+<h4><%= @item.name.upcase %></h4>
+<table>
+  <tr>
+    <th>Id</th>
+    <th>Name</th>
+    <th>Price</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <th><%= @item.id %></th>
+    <th><%= @item.name %></th>
+    <th><%= @item.price %></th>
+    <th><%= @item.description %></th>
+  </tr>
+</table>
+<br/>
+
+добавляем в new.html и edit.html(для отображения окон)
+<%= label_tag :description %>
+<%= text_field_tag :description %>
+
+Что-бы заработал description в items_controller
+в приватный метод items_params добавляем :description
+
+Делаем сортировку товара 
+в index.html в строчку <% @items.sort.each do |item| %> добавляем sort
+
+git status  измененные файлы
+
+
+
+20.50 использование binding.pry
+
+В ApplicationHelper
+два метода(впоследствии переписываем в один)
+(рег.выраж. /\s(https:\/\/.*?)\s/ rubymine изменил на %r{\s(https://.*?)\s})
+
+переписываем
+def urls_to_images(str)
+    str.gsub!(%r{https://[^\s<]+}) do |url|
+      "<img src='#{url}' width='100'; />"
+    end
+    str.html_safe
+end
+
+
+В show.html.erb меняем на
+<li>Description: <%= urls_to_images (@item.description) %></li> (подключаем хелпер)
+
+Если не можем добавить ссылку в описание, то добавляем ее в ручную в базу данных
+
+В index.html.erb
+изменяем <td><%= item.description %></td> на <td><%= "img" if item.description %></td>
+что-бы длинный адрес картинки заменить на слово картинка
+
+
+В шоу добавляем(вывести link)
+<li>Link: <%= urls_to_content ("https://ru.wikipedia.org/wiki/%D0%A6%D0%B2%D0%B5%D1%82%D0%BE%D0%BA") %></li>
+
+helper переписываем(если встречается изображение, то выводим изображение, если ссылка то ссылку)
+def urls_to_content(str)
+    str.gsub!(%r{https://[^\s<]+}) do |url|
+      if url[/(?:png|jpe?g|gif|svg)$/]
+      "<img src='#{url}' width='100'; />"
+      else
+        "<a href='#{url}' target='_blank'>link to info</a>"
+      end
+    end
+    str.html_safe
+  end
+end
+ 

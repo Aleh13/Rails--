@@ -1,0 +1,105 @@
+
+Количество единиц товара в одной корзине
+Ассоциация has_many :through(через)
+
+
+###
+Убираем шапку когда нету таблицы
+
+<% unless @items.empty? %>
+<% binding.pry %> (гем pry для отладки) 6.50
+  
+<% else %>
+  
+<% end %>
+
+Отладка(pry)
+ @items == true
+=> nil
+
+ @items.nil?
+=> false
+
+@items.empty?
+=> true
+
+Выйти из pry в ubuntu cntr+shift+d в режиме нескольких окон
+
+
+
+Сгенерируем модель
+rails g model position
+
+В миграцию create_table
+
+create_table :positions do |t|
+      t.integer :cart_id
+      t.integer :item_id
+      t.integer :quantity
+
+      t.timestamps
+      
+      
+Запускаем миграцию
+ bundle exec rake db:migrate && rake db:migrate RAILS_ENV=test
+ 
+Удаляем таблицу carts_items(она не нужна)
+создаем миграцию
+rails g migration drop_table_carts_items
+
+в миграции
+class DropTableCartsItems < ActiveRecord::Migration[6.0]
+  drop_table :carts_items
+end
+
+
+Запускаем миграцию
+ bundle exec rake db:migrate && rake db:migrate RAILS_ENV=test
+ 
+ Удалилась таблица
+ carts_items
+ 
+ В модели Item
+ добавляем
+ has_many :positions
+ has_many :carts, through: :positions
+ комментируем
+ #has_and_belongs_to_many :carts
+ 
+ В модели Cart
+ добавляем
+ has_many :positions
+ has_many :items, through: :positions
+ комментируем
+ has_and_belongs_to_many :items
+ 
+ В модели Position
+ belongs_to :item
+
+Создадим корзину
+cart = Cart.create
+
+Создадим товары
+Item.create(name: 'car', price: 120)
+
+Проверяем наличие товара
+Item.all
+Item.all.size
+
+Сохраним переменную Item.all в items
+items = Item.all
+
+Пять заказов одного товара
+position = Position.create(item_id: items.first.id, cart_id: cart.id, quantity: 5)
+
+
+Получаем информацию о товаре
+cart.items
+
+Информация о заказе
+cart.positions
+
+
+
+
+

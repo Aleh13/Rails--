@@ -1,0 +1,35 @@
+REST ful контроллеры
+модель в ед.числе(item) + контроллер в мн.числе(items) = REST ful
+
+модель CRUD
+  def index; end
+  def create; end
+  def new; end
+  def show; end
+  def edit; end
+  def update; end
+  def destroy; end
+  
+  
+Форма(вьюха new) для заполнения данных HTML
+  <h2 style="color: #B00100; margin: 0 auto">create new item<h2>
+
+   <form action="/items" method="post">
+    <label>
+      <input type="text" name="title" />
+    </label>
+      <input type="submit" />
+   </form>
+   
+Форма(вьюха new) на встроенном Ruby
+  <h2 style="color: #B00100; margin: 0 auto">create new item<h2>
+
+  <%= form_tag items_path, method: :get do %>
+    <%= label_tag :name %>
+    <%= text_field_tag :name %>
+    <%= label_tag :price %>
+    <%= text_field_tag :price %>
+    <%= submit_tag "Save", class: "btn btn-large btn-primary" %>
+
+  <% end %>
+

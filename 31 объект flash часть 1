@@ -1,0 +1,54 @@
+
+flash сообщения
+
+def create
+    item = Item.create (items_params)
+    if item.persisted?
+    flash[:success] = 'Item was saved'
+      redirect_to items_path
+    else                       (если объект не будет сохранен то)
+      flash.now[:error] = "Please fill all fields correctly "
+      render :new
+      #render json: item.errors, status: :unprocessable_entity
+    end
+  end
+
+
+
+flash[:success] = 'Item was saved'
+выводит сообщение после удачного сохранения товара
+
+render :new
+рендерит новую страницу
+
+flashю.now[:error] = "Please fill all fields correctly"
+в объект flash под error мы сохраняем надпись
+(now чтобы избежать коллизий при рендере существующего объекта)
+
+
+в application.html.erb  в body для отображения надписи
+<p style="color: #B00100"><%= flash[:error] %></p>
+<p style="color: #B00100"><%= flash[:success] %></p>
+
+
+в метод update
+def update
+    if @item.update(items_params)
+    flash[:success] = 'Item was saved'
+      redirect_to item_path
+    else
+      flash.now[:error] = "Please fill all fields correctly "
+      render json: item.errors, status: :unprocessable_entity
+    end
+  end
+
+также добавляем
+flash[:success] = 'Item was saved'
+flash.now[:error] = "Please fill all fields correctly"
+
+
+в метод destroy
+flash[:error] = "Item was delited"
+flash.now[:error] = "Item wasn't delited"
+
+

@@ -1,0 +1,108 @@
+Юзер может иметь одну корзину, одна корзина будет принадлежать одному юзеру(has_one & belongs_to)
+
+
+Сгенерируем модель
+rails g model user
+
+Сгенерируем модель
+rails g model cart (корзина)
+
+
+
+Когда будем ложить что-то в корзину хотим знать, какому юзеру пренадлежит то что лежит в корзине
+
+миграция user
+class CreateUsers < ActiveRecord::Migration[6.0]
+  def change
+    create_table :users do |t|
+      t.string :login
+      t.timestamps
+    end
+  end
+end
+
+миграция корзина
+class CreateCarts < ActiveRecord::Migration[6.0]
+  def change
+    create_table :carts do |t|
+      t.integer :user_id
+      t.timestamps
+    end
+  end
+end
+
+Запускаем миграции
+bundle exec rake db:migrate && rake db:migrate RAILS_ENV=test
+
+Запускаем тесты
+bundle exec rspec
+
+в файл .rspec добавляем
+--color (раскрашиваем ошибки)
+--format doc (формат doc)
+
+в созданном тесте cart_spec.rb заменяем
+RSpec.describe Cart, type: :model do
+  it 'cart test' do; end
+end
+
+в user_spec.rb
+RSpec.describe User, type: :model do
+  it 'cart user' do; end
+end
+
+Запускаем тесты
+bundle exec rspec
+
+
+В модели(user) пишем(юзер имеет одну корзину)
+class User < ApplicationRecord
+  has_one :cart
+end
+
+
+В модели(cart) пишем(корзина принадлежит этому юзеру)
+class Cart < ApplicationRecord
+  belongs_to :user
+end
+
+
+Создаем пользователя
+user = User.create(login: 'sasha')
+
+Создаем корзину
+cart = Cart.create
+
+
+в юзер карт ложим карт
+user.cart = cart
+
+cart принадлежит user, а user cart
+
+
+В консоли пишем
+cart.user
+вернет пользователя которому принадлежит
+
+user.cart
+вернулась cart user-а
+
+
+удалить юзера
+user.destroy
+удалить корзину
+cart.destroy
+
+Что-бы с юзером удалилась корзина в модель добавляем(dependent: :destroy)
+class User < ApplicationRecord
+  has_one :cart, dependent: :destroy
+end
+
+!Нужно выйти из консоли и зайти заново(т.к. изменился)
+
+Теперь юзер удалится с карт
+user.destroy
+
+
+
+

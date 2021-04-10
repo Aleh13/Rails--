@@ -1,0 +1,61 @@
+development, test
+gem 'factory_bot'
+bundle install
+
+конфигурируем в rails_helper.rb
+config.include FactoryBot::Syntax::Methods
+  config.before(:suite) do
+    FactoryBot.find_definitions
+  end
+end
+
+в order.spec (создаем товары и корзину, ложим товары в корзину)
+it 'calculates the price' do
+  item1 = Item.new(price: 10)
+  item2 = Item.new(price: 20)
+
+  order = Order.new
+  order.items << item1
+  order.items << item2
+end
+
+в order.rb создаем метод
+def calculate_total
+  write_attribute :total, items.map(&:price).inject(:+)
+end
+атрибут 'total' в котором перебираем цены товара и плюсуем цены между собой
+
+в item_spec.rb
+order.calculate_total (вызовем метод из order.rb)
+expect(order.total).to be 30.0
+
+в order.rb
+has_and_belongs_to_many :items (чтобы могли использовать item)
+такую же связь делаем в item.rb
+has_and_belongs_to_many :orders
+
+генерируем миграцию
+rails g migration items_orders
+в таблице
+create_table :items_orders, id: false do |t| (id false, так как создаем связывающую таблицу)
+   t.belongs_to :item
+   t.belongs_to :order
+ end
+end
+
+запускаем миграцию
+bundle exec rake db:migrate && rake db:migrate RAILS_ENV=test
+
+добавим колонку total в таблицу(создадим новую миграцию)
+rails g migration add_column_to_order
+в миграции
+def change
+  add_column :orders, :total, :float
+end
+запустим миграцию
+bundle exec rake db:migrate && rake db:migrate RAILS_ENV=test
+запускаем спеку
+
+
+
+

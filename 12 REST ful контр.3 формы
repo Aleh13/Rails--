@@ -1,0 +1,45 @@
+Удаляем данные из таблицы-метод destroy
+Во вью index добавляем
+<li><%= button_to 'delete', item_path(item), method: :delete %></li>
+
+В контроллер
+def destroy
+  item = Item.where(id: params[:id]).first (находим данный объект)
+
+   if item.destroy.destroyed? (если он был уничтожен)
+     redirect_to items_path (то делаем редирект на индексную страницу(items_path индексная страница))
+    else
+     render json: item.errors, status: :unprocessable_entity(иначе мы выведем ошибки и статус unprocessable_entity)
+end
+
+Редактируем данные-метод edit и update
+Вью (взяли из new)
+<h2 style="color: #B00100; margin: 0 auto">edit <%= @item.name %><h2>   (вставили %= @item.name %>),(добавили @item, @item.name, @item.price )
+
+
+  <%= form_tag item_path(@item), method: :put do %>
+    <%= label_tag :name %>
+    <%= text_field_tag :name, @item.name %>
+    <%= label_tag :price %>
+    <%= text_field_tag :price, @item.price %>
+    <%= submit_tag "Update", class: "btn btn-large btn-primary" %>
+
+<% end %>
+
+Контроллер edit (скоприровали из метода show)
+def edit
+  unless (@item = Item.where(id: params[:id]).first)
+    render body: 'Page not found', status: 404
+  end
+end
+
+Контроллер update
+def update
+    item = Item.where(id: params[:id]).first
+    if item.update(items_params)
+    redirect_to item_path
+    else
+      render json: item.errors, status: :unprocessable_entity
+    end
+    end
+

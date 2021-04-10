@@ -1,0 +1,15 @@
+Запросы ActiveRecord, order и limit
+order
+сортирует по цене
+def index
+    @items = Item.all.order(:price)
+end
+
+сортировка в обратном порядке(посредством команд sql)
+def index
+    @items = Item.all.order('price DESC')
+end
+
+
+limit
+ограничивает количесвто товаров

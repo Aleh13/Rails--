@@ -1,0 +1,46 @@
+"модели" в этом случае данные в таблицу с помощью командной строки
+
+В консоли rails
+
+Класс
+(Есть класс Item, создадим экземпляр класса)
+Item.new
+it = Item.new
+it.price = 50
+it.name = 'dasha'
+it.real = true
+it.save
+
+(Удалять и добавлять поля можно из RubyMine)
+
+it = Item.new({name: 'dasha', price: 50})
+it.save
+
+Автоматически создает .new и it.save
+it = Item.create({name: 'masha', price: 50})
+
+Обновить имя
+Item.where(name: 'dasha').update(name: 'sasha')
+
+Последняя запись в базе
+Item.last
+
+Удалить последнюю запись
+Item.last.destroy
+                                                                              
+Удалить запись
+Item.where(name: 'sasha').destroy_all
+
+Или 
+Item.where(name: 'sasha').first.destroy (первый кто попадется с этим именем)
+
+
+#
+В памяти
+создаем обЪект(не пройдет если стоит валидация) 
+it = Item.new(price: -1)
+
+Создаем запись
+Item.create(name: 'dasha', description: 'for sale', price: 50)
+
+

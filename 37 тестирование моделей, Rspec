@@ -1,0 +1,70 @@
+тестирование моделей, Rspec
+в папке spec/models
+создаем
+item_spec.rb
+скопируем код из соседнего файла вставим, поменяем имя на Item
+
+установим gem
+gem 'shoulda-matchers'
+bundle install
+далее подключаем его в
+railis_helper.rb
+require 'shoulda/matchers'
+в этом же файле конфигурируем
+Shoulda::Matchers.configure do |config|
+  config.integrate do |with|
+    with.test_framework :rspec
+    with.library :rails
+  end
+end
+
+в
+item.spec.rb
+тест на валидацию по имени
+RSpec.describe Item, type: :model do
+  it 'validates name' do
+    should validate_presence_of :name
+  end
+end
+
+тест валидации price
+it 'validates price' do
+  should validate_numericality_of :price
+end
+
+тест на связь has_many
+it 'has_many' do
+  should have_many :positions
+  should have_many :comments
+  should have_many :carts
+end
+  
+тест на связь has_one
+it 'has_one' do
+  should have_one :image
+end
+
+запуск определенной спеки
+bundle exec rspec spec/models/item_spec.rb
+
+тестируем модель order связь belong_to
+в order_spec.rb
+RSpec.describe Order, type: :model do
+  it 'belongs_to' do
+    should belong_to :user
+  end
+end
+запускаем
+bundle exec rspec spec/models/order_spec.rb
+
+тестируем модель position связь belong_to (пишем тест в простом варианте)
+ it { should belong_to :cart }
+ it { should belong_to :item }
+
+переписываем тесты в item.spec.rb (упрощаем)
+it { should validate_presence_of :name }
+it { should validate_numericality_of :price }
+it { should have_many :positions }
+it { should have_many :comments }
+it { should have_many :carts }
+it { should have_one :image }

@@ -1,0 +1,49 @@
+Создание приложения с postgresql
+rails new rails-course --database=postgresql
+
+Подключаем RBVN в RubyMine
+
+Настраиваем БД
+В config-database.yml прописываем в default под poll
+  username: dasha
+  password: 1234
+  host: localhost
+  port: 5432
+  
+Можно удалить production
+  
+Создаем базу данных
+bundle exec rake db:create
+
+Подключаем базу в RubyMine (+, Data Sourse, PostgresSQL, User, Password, Database)
+
+Удалить базу данных
+DROP DATABASE testdb;
+
+Заходим в postgres
+sudo -i -u postgres
+Заходим в базу
+psql
+Посмотреть пользователей базы данных
+\du
+Создать роль (пользователя базы данных)
+
+Посмотреть созданные базы данных
+\l
+Выход
+\q
+
+
+Файл config-application.rb
+Находятся настройки приложения
+.......
+
+Остановить rails server процесс если сервер не запускается
+lsof -wni tcp:3000
+kill -9 22694 (PID)
+
+Команда для проверки работоспособности postgresql
+service postgresql status
+
+
+

@@ -1,0 +1,63 @@
+Чтобы добавить поле в колонку
+
+Перед удалением полей в таблице отключить базу в RubyMine
+
+
+Создаем новую миграцию
+rails g migration add_description_column_to_items
+
+Добавляем в миграцию
+def change
+  add_column :items, :description, :string
+  или  
+  add_column table_name :items, column_name :description, type :string (непроходит)
+end
+
+rake db:migrate
+
+
+
+Откат последней миграции
+bundle exec rake db:rollback
+
+Чтобы найти версию всех миграций, вы можете использовать эту команду
+rake db:migrate:status
+
+Откатить (1,2,3) миграцию
+rake db:rollback STEP=2
+
+Откат одной конкретной миграции
+rake db:migrate VERSION=20100905201547
+
+2-й способ изменить таблицу(добавить поле) без создания доп.миграции
+Добавляем нужное поле(t.string  :description) в изначально созданную миграцию
+Убираем базу данных полностью
+bundle exec rake db:drop
+Создать базу данных и запустить миграции
+bundle exec rake db:create && rake db:migrate
+
+3-й способ изменить таблицу
+bundle exec rake db:drop
+Создаем базу данных
+bundle exec rake db:create
+
+Сделает первый, второй шаг и создаст таблицы
+bundle exec rake db:migrate:reset
+Делаем миграцию тестовой базы данных
+rake db:migrate RAILS_ENV=test
+
+
+
+Добавляем индексы(оптимизация поиска) в class
+add_index :items, :price
+add_index :items, :name
+
+Удаляем базу 
+rake db:drop
+Создаем базу с таблицами
+bundle exec rake db:migrate:reset
+Делаем миграцию тестовой базы данных
+rake db:migrate RAILS_ENV=test
+
+
+

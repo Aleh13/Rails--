@@ -1,0 +1,25 @@
+файл отвечающий за перевод
+config/locales/
+
+в new.html.erb
+<%= f.input :description, label: t("item.description"), input_html: { class: "form-text" } %>
+вставили
+t("item.description") путь к переводу
+в aplication.rb  (в папке config)
+config.i18n.default_locale = :ru
+
+в
+ru.yml
+ru:
+  item:
+    description: "Описание"
+  activerecord:
+    models:
+      item: "Товар"
+    attributes:
+      item:
+        price: "Цена"
+        name: "Название"
+        description: "Описание"
+        weight: "Вес"
+

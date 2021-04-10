@@ -1,0 +1,46 @@
+gem 'simple_form'
+bundle install
+
+иконка favicon
+application.html.erb
+в head
+<%= favicon_link_tag asset_path '1.jpg' %>
+в
+app/assets/images
+должны быть картинки
+
+в методе create из item делаем @item (инстансную переменную)
+добавляем метод new
+def new
+    @item = Item.new
+end
+
+переписываем new.html.erb
+<%= simple_form_for @item do |f| %>
+ <%= f.input :name,  label: 'Name',  input_html: { class: "form-text" } %>
+ <%= f.input :price, label: 'Price', input_html: { class: "form-text" } %>
+ <%= f.input :description, label: 'Description', input_html: { class: "form-text" } %>
+
+ <%= f.button :submit, class: "btn-primary" %>
+ 
+переписываем стронг параметры в приватном методе
+def items_params
+    params.require(:item).permit(:name, :price, :real, :weight, :description)
+end
+так как мы сохраняем таблицу мы добавили .require(:item) 
+
+если одно поле будет не заполнено при сохранении,
+то другие поля не сбросятся
+
+добавим
+ required: true
+в
+<%= f.input :price, label: 'Price', input_html: { class: "form-text" }, required: true %>
+
+для показа надписи 'заполните поле'
+
+
+добавим стилей bootstrap
+<div class="col-sm-12 my_auto">
+
+</div>

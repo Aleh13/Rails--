@@ -1,0 +1,9 @@
+
+Валидация в моделе
+
+Числовое значение больше 0 или равное нулю или nil (ничего)
+validates :price, numericality: { greater_than: 0, allow_nil: true }
+
+Обязательное условие(для сохранения обязательно должно быть поле name и description)  
+validates :name, :description, presence: true
+

@@ -1,0 +1,19 @@
+Запросы ActiveRecord, .where
+
+where (price: 200) 
+
+def index
+    @items = Item.where(price: 55)
+end 
+
+
+sql запрос
+def index
+    @items = Item.where('price >= 200 OR votes_count <= 3')
+end 
+
+передача условия через строку браузера
+@items = Item.where('price = ?', params[:price_from])
+
+в строке
+?price_from=55 

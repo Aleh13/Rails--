@@ -1,0 +1,94 @@
+
+
+Убираем повторения в коде и редактировать данные может только админ
+Callback
+before_action
+after_action
+
+
+Паттерн don'r reapit uself   (убирает повторения в коде)
+Пишем в самом начале экшн
+before_action :find_item, only: %i[show edit update destroy]  (к каким эндпоинтам применим)
+
+создаем приватный метод
+def find_item
+    @item = Item.where(id: params[:id]).first
+end
+
+
+Получаем
+
+def destroy
+    if @item.destroy.destroyed?
+      redirect_to items_path
+    else
+      render json: item.errors, status: :unprocessable_entity
+    end
+
+  end
+  
+  
+def update
+    if @item.update(items_params)
+    redirect_to item_path
+    else
+      render json: item.errors, status: :unprocessable_entity
+    end
+  end
+  
+  
+измененный вариант 
+def edit
+    unless @item 
+      render body: 'Page not found', status: 404
+    end
+  end
+  
+
+самый измененный вариант
+def edit
+      render body: 'Page not found', status: 404 unless @item
+end
+  
+
+измененный вариант 
+def show
+    unless @item
+      render body: 'Page not found', status: 404
+    end
+  end
+  
+
+самый измененный вариант 
+def show
+     render body: 'Page not found', status: 404 unless @item
+end
+
+
+
+Редактировать данные может только админ
+пишем в самом начале экшн
+before_action :admin?, only: %i[edit update new create destroy]
+
+приватный метод
+def admin?
+    render json: 'Access denied', status: :forbidden unless params[:admin]
+end
+
+Чтобы получить доступ в url добавляем ?admin=1
+
+
+Callback
+after_action
+выполняется после основных действий
+
+after_action :show_info, only: %i[index]
+
+для примера после показа index выводит сообщение 'Index endpoint'
+
+def show_info
+    puts 'Index endpoint'
+end 
+
+
+  

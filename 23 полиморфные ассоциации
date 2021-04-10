@@ -1,0 +1,92 @@
+
+Полиморфные ассоциации
+(Создавать комментарии для товаров(item) и блога одним пользователем)
+
+Создадим модель
+bundle exec rails g model comment
+и свяжем ее с айтемом
+в миграции пишем
+t.string  :body
+t.integer :user_id
+
+создадим связь в модели comment
+belongs_to :user
+
+в модели user
+has_many :comments
+
+Предположим что в будущем мы захочем оставлять комментарии для блога
+в миграциию coomments добавим
+      (t.string :body)
+      (t.integer :user_id)
+      t.integer :item_id
+      t.string :blog_post_id
+
+
+Пользователь может оставить комментарий для блога и продукта, получается
+что если коммент. для блога, пустой остается ячейка коммент. для продукта и 
+наооборот
+
+Для исправления ситуации :item_id и :blog_post_id заменим полиморфными ассоциациями
+      t.string  :body
+      t.integer :user_id
+      t.integer :commentable_id
+      t.string  :commentable_type (к какому типу комментариев будет относится запись Item или BlogPost)
+      
+      
+Создадим модель blog_post
+bundle exec rails g model blog_post
+
+в миграции
+      t.string :title
+      t.string :body
+      
+Запустим миграции
+bundle exec rake db:migrate && rake db:migrate RAILS_ENV=test
+
+В модель Item добавим
+has_many :comments, as: :commentable (Item является комментируемым)
+
+В модель BlogPost
+has_many :comments, as: :commentable (BlogPost является комментируемым)
+
+В модели Comment
+belongs_to :commentable, polymorphic: true
+
+
+С помощью консоли создадим:
+товар
+i = Item.create(name: 'car', price: '120')
+
+пользователя
+u = User.create(login: 'dasha')
+
+блогпост
+b = BlogPost.create(title: 'blog', body: 'body for post')
+ 
+найдем товар
+i = Item.first
+в товар который уже доступен положим коммент
+i.comments << Comment.new(user_id: User.first.id, body: 'item comment')
+i.comments << Comment.new(user_id: User.second.id, body: 'item comment')
+
+В таблице comments сохранились два комментария к товару от разных юзеров
+
+так как мы создали BlogPost
+добавим в него комментарий
+b.comments << Comment.new(user_id: User.first.id, body: 'item comment')
+
+получить все комментарии для item
+i.comments
+
+все комментарии к блогпосту
+b.comments
+
+
+
+
+
+      
+      
+
+

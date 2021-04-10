@@ -1,0 +1,24 @@
+Генерация модели с именем item
+rails g model item
+Создаются миграции(таблицы) и модели
+
+
+В созданной миграции делаем таблицу для базы данных
+	create_table :items do |t|
+    	t.float   :price
+    	t.string  :name
+    	t.boolean :real
+    	t.float   :weight
+        t.timestamps
+        
+t.timestamps  автоматически создает колонки :created_at  :updated_at 
+
+
+bundle exec rake db:migrate
+
+Создаем таблицы для тестов
+RAILS_ENV=test rake db:migrate
+
+В файле schema.rb находятся все таблицы
+
+

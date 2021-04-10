@@ -1,0 +1,32 @@
+Добавляем Bootstrap в наше приложение использую Вебпакер
+В командной стороке с приложением
+yarn add bootstrap@4.3.1 jquery popper.js
+
+package.json добавлены зависимости
+"bootstrap": "^4.6.0",
+"jquery": "^3.6.0",
+"popper.js": "^1.16.1",
+
+config/webpack/environment.js
+
+В
+const webpack = require("webpack")
+
+environment.plugins.append("Provide", new webpack.ProvidePlugin({
+
+    $: 'jquery',
+
+    jQuery: 'jquery',
+
+    Popper: ['popper.js', 'default']
+
+
+}))
+
+
+В
+app/assets/stylesheets/application
+
+require bootstrap
+
+

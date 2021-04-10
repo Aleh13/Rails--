@@ -1,0 +1,68 @@
+Application Controller - контроллер от которого наследую все контроллеры
+
+в Application Controller
+
+  def render_403
+    render file: 'public/403.html', status: :forbidden  (статус forbidden -доступ запрещен)
+  end
+ 
+  def render_404
+    render file: 'public/404.html', status: :not_found
+  end
+  
+  
+  
+  в метод find_item
+  def find_item
+    @item = Item.where(id: params[:id]).first  
+    render_404 unless @item                     (добавили -если не будет найден id запустить метод render_404)  
+  end
+  
+  
+  
+  метод
+  
+  def admin?
+    true
+    #render json: 'Access denied', status: :forbidden unless params[:admin]
+  end
+  
+  заменяем 
+  
+  def admin?
+    render_404 unless params[:admin]    (запустить метод render_404 если не админ)
+  end
+  
+  
+  создаем страницу 403.html
+  создаем страницу 403.html
+  
+  
+  
+  Изменяем эндпоинты
+  def show
+      render body: 'Page not found', status: 404 unless @item (вместо этой строчки будет отрабатывать метод render_403)
+  end
+
+  def edit
+      render body: 'Page not found', status: 403 unless @item (вместо этой строчки будет отрабатывать метод render_403)
+  end
+  
+  Получаем
+  #def show
+  end
+
+  #def edit
+  end
+  
+  
+  отрабатываются методы render_403, render_404
+  редактировать данные доступно через url ?admin=true
+  
+  Кнопка button_to отрабатывает метод POST(защищенный), для работы кнопки указываем метод get
+  <%= button_to 'new item', new_item_path, method: :get %>
+  
+  
+  
+  
+  

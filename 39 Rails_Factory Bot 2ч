@@ -1,0 +1,60 @@
+в папке spec создаем дерикторию factories
+создаем в ней фабрики(во множественном числе)
+items.rb
+orders.rb
+
+в items.rb передаем блок содержащий поля таблицы items(из schema.rb)
+FactoryBot.define do
+  factory :item do
+    price  { 50 }
+    name   { 'car' }
+    real   { true }
+    weight { 20 }
+    description { 'black' }
+  end
+end
+
+в orders.rb
+FactoryBot.define do
+  factory :order do
+    association name :user, factory: :user
+    total { 1 }
+  end
+end
+
+так как order принадлежит user создадим фабрику users.rb
+FactoryBot.define do
+  factory :user do
+  end
+end
+
+
+в item.spec.rb
+заменяем
+#item1 = Item.new(price: 10)
+#item2 = Item.new(price: 20)
+#order = Order.new
+на
+context 'calculates the price' do
+  let!(:item_1) { create :item }
+  let!(:item_2) { create :item }
+  let!(:order)  { create :order }
+end
+
+переписываем
+context 'calculates the price' do
+    let!(:item_1) { create :item, price: 10 }
+    let!(:item_2) { create :item, price: 20 }
+    let!(:order)  { create :order }
+
+    it 'calculates the price' do
+      
+    order.items << item_1
+    order.items << item_2
+      
+    expect(order.calculate_total).to be 30.0
+
+    end
+  end
+end
+

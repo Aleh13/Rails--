@@ -1,0 +1,5 @@
+в терминале
+yarn add jquery
+заходим
+config/webpack/environment.js
+смотрим видео 42

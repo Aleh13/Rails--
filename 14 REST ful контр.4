@@ -1,0 +1,13 @@
+Видео 13
+Кнопка для добавления данных(на index) 
+<%= link_to 'new item', new_item_path %>
+
+Видео 14
+Кнопка для редактирования(на show)
+<%= link_to "edit #{@item.name}", edit_item_path %>
+
+кнопка для перехода на index(на show)
+<%= link_to "index", items_path %>
+
+кнопка для удаления данных(на show)
+<%= button_to "delete #{@item.name}", item_path(@item), method: :delete %>
